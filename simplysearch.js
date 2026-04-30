@@ -15,6 +15,6 @@ searchInput.addEventListener("keydown", (event) => {
 });
 
 runBtn.addEventListener("click", () => {
-  window.open("https://www.google.com/search?q=" + encodeURIComponent(searchInput.value + " -ai"));
+  window.open("https://www.google.com/search?q=" + encodeURIComponent(searchInput.value + " -noai"));
   searchInput.focus();
 });
