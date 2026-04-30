@@ -1,137 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SimplySearch</title>
+
 <style>
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
-    font-family: "Poppins", sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 75vh;
-    padding: 1rem;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
-button {
-    border: none;
-    cursor: pointer;
-    opacity: 1;
-    transition: opacity 0.2s ease;
+.logo {
+  display: block;
+  margin: 0 auto 1rem;
+  max-width: 1100px;
+  width: 60%;
+  height: auto;
 }
 
-button:disabled {
-    opacity: 0.2;
-    cursor: not-allowed;
+@media (max-width: 500px) {
+  .logo {
+    width: 75%;
+  }
 }
 
-button:hover {
-    opacity: 0.8;
-}
-
-input {
-    font-size: 1.1rem;
-    font-weight: 500;
-}
-
-input:focus {
-    outline: 1px solid;
-}
-
-.wrapper {
-    width: 42.5%;
-    max-width: 100%;
-    position: relative;
-}
-
-.wrapper input {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid #434343;
-    border-radius: 50px;
-    padding: 1rem 4rem 1rem 2rem;
-    width: 100%;
-}
-
-.wrapper button {
-    background: #434343;
-    border-radius: 50px;
-    aspect-ratio: 1;
-    height: 80%;
-
-    position: absolute;
-    top: 10%;
-    right: 5px;
-}
-
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
+.logo-btn {
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
 }
 
-.tooltiptext {
-  visibility: hidden;
-  width: 500%;
-  background-color: #d9d9d9;
-  font-size: .8rem;
-  color: #595959;
-  text-align: center;
-  padding: 5px;
-  border-radius: 6px;
-  position: absolute;
-  z-index: 1;
-  top: -75%;
-  left: 125%;
+.logo-btn:hover {
+  opacity: 0.8;
 }
 
-.tooltiptext::after {
-  content: " ";
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+}
+
+input {
+  width: 100%;
+  padding: 1rem 3.5rem 1rem 1rem;
+  font-size: 1.1rem;
+  border-radius: 999px;
+  border: 2px solid #444;
+}
+
+.wrapper button {
   position: absolute;
   top: 50%;
-  right: 100%;
-  margin-top: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent #d9d9d9 transparent transparent;
+  right: 6px;
+  transform: translateY(-50%);
+  height: 44px;
+  width: 44px;
+  border-radius: 50%;
+  border: none;
+  background: #444;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
+.wrapper button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.wrapper button:not(:disabled):hover {
+  opacity: 0.8;
+}
+
+.note {
+  font-size: 0.95rem;
+  color: green;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.footer {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+  text-align: center;
 }
 </style>
+</head>
+
 <body>
-    <div class="col" align="center">
-        <div class="row" style="padding: 1rem">
-            <a href="https://simplysearch.github.io/"><img src="logo.png" alt="SimplySearch" style="width:50%"></a>
-        </div>
-        <div class="wrapper">
-            <input type="search" id="searchInput" placeholder="Enter search term(s)"/>
-            <button id="run">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" stroke-width="3" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M5 12l14 0"></path>
-                    <path d="M13 18l6 -6"></path>
-                    <path d="M13 6l6 6"></path>
-                </svg>
-            </button>
-        </div>
-        <div class="row" style="padding: 1rem 0rem 0rem 0rem">
-            <p style="color:green; font-size:1.1rem">Despite efficiency improvements, AI search result summaries are resource-intensive, likely using <a href="https://www.scientificamerican.com/article/what-do-googles-ai-answers-cost-the-environment/" target="_blank">orders of magnitude more energy</a> than a traditional search.</p>
-        </div>
-        <div class="row">
-            <p class="tooltip" style="color:grey; font-size:1.1rem">
-                <span class="tooltiptext"><i>SimplySearch does not track your search queries - it has no database. You can view its simple source code on GitHub.</i></span>
-                <i>Privacy</i>
-            </p>
-        </div>
-    </div>
+<div class="page">
+  <button id="logoBtn" class="logo-btn" aria-label="Reset search">
+    <img src="logo.png" alt="SimplySearch logo" class="logo">
+  </button>
+  <form id="form" class="wrapper">
+    <input type="search" id="searchInput" placeholder="Search without AI summaries" aria-label="Search" autofocus>
+    <button id="run" type="submit" aria-label="Search">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" stroke-width="3" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M5 12l14 0"></path>
+        <path d="M13 18l6 -6"></path>
+        <path d="M13 6l6 6"></path>
+      </svg>
+    </button>
+  </form>
+  <p class="note">Despite efficiency improvements, AI search result summaries are resource-intensive, likely using <a href="https://www.scientificamerican.com/article/what-do-googles-ai-answers-cost-the-environment/" target="_blank">orders of magnitude more energy</a> than a traditional search.</p>
+  <p class="footer"><i>SimplySearch does not track your search queries - it has no database. You can view its simple source code on GitHub.</i></p>
+</div>
+
+<script>
+const form = document.getElementById("form");
+const input = document.getElementById("searchInput");
+const btn = document.getElementById("run");
+const logoBtn = document.getElementById("logoBtn");
+
+logoBtn.addEventListener("click", () => {
+  input.value = "";
+  btn.disabled = true;
+  input.focus();
+});
+
+function updateState() {
+  btn.disabled = input.value.trim() === "";
+}
+
+updateState();
+
+input.addEventListener("input", updateState);
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const query = input.value.trim();
+  if (!query) return;
+
+  window.open(
+    "https://www.google.com/search?q=" + encodeURIComponent(query + " -noai"), "_blank", "noopener"
+  );
+});
+</script>
+
 </body>
 </html>
-<script type="text/javascript" src="simplysearch.js"></script>
