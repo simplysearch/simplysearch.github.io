@@ -6,8 +6,6 @@
 <title>SimplySearch</title>
 
 <style>
-* { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
@@ -19,7 +17,7 @@ body {
 
 .logo {
   display: block;
-  margin: 0 auto 1rem;
+  margin: 0 auto;
   max-width: 1100px;
   width: 60%;
   height: auto;
@@ -28,6 +26,10 @@ body {
 @media (max-width: 500px) {
   .logo {
     width: 75%;
+  }
+  .engines {
+    flex-direction: column;
+    align-items: center;
   }
 }
 
@@ -87,17 +89,72 @@ input {
   opacity: 0.8;
 }
 
+.engines {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.engine-label {
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.engine-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.engine-btn {
+  height: 44px;
+  width: 44px;
+  border-radius: 50%;
+  border: 2px solid #444;
+  background: white;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+}
+
+.engine-btn img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.engine-btn:hover {
+  background: #f0f0f0;
+  opacity: 1;
+}
+
+.engine-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.engine-btn.selected {
+  border: 2px solid black;
+  background: #eee;
+  transform: scale(1.05);
+  opacity: 1;
+}
+
 .note {
   font-size: 0.95rem;
-  color: green;
-  margin-top: 1rem;
+  margin: 1rem;
   text-align: center;
 }
 
 .footer {
   font-size: 0.9rem;
   color: #666;
-  margin-top: 0.5rem;
+  margin: 0 1rem;
   text-align: center;
 }
 </style>
@@ -108,9 +165,10 @@ input {
   <button id="logoBtn" class="logo-btn" aria-label="Reset search">
     <img src="logo.png" alt="SimplySearch logo" class="logo">
   </button>
+  <p class="note">A simple way to avoid AI-generated summaries in your web search results</p>
   <form id="form" class="wrapper">
     <input type="search" id="searchInput" placeholder="Search without AI summaries" aria-label="Search" autofocus>
-    <button id="run" type="submit" aria-label="Search">
+    <button id="runBtn" type="submit" aria-label="Search">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" stroke-width="3" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <path d="M5 12l14 0"></path>
@@ -119,38 +177,84 @@ input {
       </svg>
     </button>
   </form>
-  <p class="note">Despite efficiency improvements, AI search result summaries are resource-intensive, likely using <a href="https://www.scientificamerican.com/article/what-do-googles-ai-answers-cost-the-environment/" target="_blank">orders of magnitude more energy</a> than a traditional search.</p>
-  <p class="footer"><i>SimplySearch does not track your search queries - it has no database. You can view its simple source code on GitHub.</i></p>
+  <div class="engines">
+    <span class="engine-label">Choose your search engine:</span>
+    <div class="engine-buttons">
+      <button type="button" class="engine-btn" data-engine="google" aria-label="Search with Google" title="Search with Google"><span style="font-size:1.67rem">👑</span></button>
+      <button type="button" class="engine-btn" data-engine="duckduckgo" aria-label="Search with DuckDuckGo" title="Search with DuckDuckGo"><span style="font-size:1.67rem">🦆</span></button>
+      <button type="button" class="engine-btn" data-engine="brave" aria-label="Search with Brave" title="Search with Brave"><span style="font-size:1.67rem">🦁</span></button>
+    </div>
+  </div>
+  <p class="note" style="color:green">Despite efficiency improvements, AI search result summaries are resource-intensive, likely using <a href="https://www.scientificamerican.com/article/what-do-googles-ai-answers-cost-the-environment/" target="_blank">orders of magnitude more energy</a> than a traditional search.</p>
+  <p class="footer"><i>SimplySearch does not track your search queries - it has no database. You can view its simple source code on GitHub. Search methods used here are not guaranteed to eliminate AI overviews, and providers may adjust their search experiences at any time.</i></p>
 </div>
 
 <script>
 const form = document.getElementById("form");
 const input = document.getElementById("searchInput");
-const btn = document.getElementById("run");
+const runBtn = document.getElementById("runBtn");
 const logoBtn = document.getElementById("logoBtn");
+const engineButtons = document.querySelectorAll(".engine-btn");
 
-logoBtn.addEventListener("click", () => {
-  input.value = "";
-  btn.disabled = true;
-  input.focus();
+const validEngines = ["google", "duckduckgo", "brave"];
+let selectedEngine = localStorage.getItem("engine");
+
+if (!validEngines.includes(selectedEngine)) {
+  selectedEngine = "google";
+}
+
+engineButtons.forEach(engineBtn => {
+  if (engineBtn.dataset.engine === selectedEngine) {
+    engineBtn.classList.add("selected");
+  }
+
+  engineBtn.addEventListener("click", () => {
+    selectedEngine = engineBtn.dataset.engine;
+    localStorage.setItem("engine", selectedEngine);
+
+    engineButtons.forEach(b => b.classList.remove("selected"));
+    engineBtn.classList.add("selected");
+  });
 });
 
 function updateState() {
-  btn.disabled = input.value.trim() === "";
+  const isEmpty = input.value.trim() === "";
+
+  runBtn.disabled = isEmpty;
 }
 
 updateState();
-
 input.addEventListener("input", updateState);
+
+logoBtn.addEventListener("click", () => {
+  input.value = "";
+  updateState();
+  input.focus();
+});
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
+
   const query = input.value.trim();
   if (!query) return;
 
-  window.open(
-    "https://www.google.com/search?q=" + encodeURIComponent(query + " -noai"), "_blank", "noopener"
-  );
+  let url = "";
+
+  switch (selectedEngine) {
+    case "google":
+      url = "https://www.google.com/search?q=" + encodeURIComponent(query + " -noai");
+      break;
+
+    case "duckduckgo":
+      url = "https://duckduckgo.com/?q=" + encodeURIComponent(query) + "&assist=false";
+      break;
+
+    case "brave":
+      url = "https://search.brave.com/search?q=" + encodeURIComponent(query) + "&summary=0";
+      break;
+  }
+
+  window.open(url, "_blank", "noopener");
 });
 </script>
 
